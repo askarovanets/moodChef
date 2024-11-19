@@ -1,0 +1,33 @@
+# Ignore Android Studio project files
+*.iml
+.idea/
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Ignore local configuration
+local.properties
+
+# Ignore API location
+config.properties
+
+# Ignore miscellaneous
+*.log
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+*.rej
+*.class
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore Windows system files
+Thumbs.db
+
+# Ignore signing files
+*.keystore
