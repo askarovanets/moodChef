@@ -13,7 +13,7 @@ import java.io.IOException;
 public class TwinwordEmotionApiClient {
 
     private static final String API_URL = "https://twinword-emotion-analysis-v1.p.rapidapi.com/analyze/";
-    private final String apiKey = BuildConfig.API_KEY;
+    private final String apiKey = BuildConfig.TWINWORD_API_KEY;
 
     private OkHttpClient client;
 

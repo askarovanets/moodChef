@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -6,16 +5,42 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Mood Input -->
     <EditText
         android:id="@+id/moodInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="How are you feeling?" />
 
+    <!-- Ingredients Input -->
+    <EditText
+        android:id="@+id/ingredientInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter available ingredients" />
+
+    <!-- Combined Action Button -->
     <Button
-        android:id="@+id/moodSubmitButton"
+        android:id="@+id/recipeFetchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Get Recipes" />
+
+    <!-- Suggestion TextView -->
+    <TextView
+        android:id="@+id/recipeSuggestionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Suggested Recipe will appear here"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="8dp" />
+
+    <!-- RecyclerView for Recipes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recipeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.moodchef;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class    RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private List<RecipeResponse.Recipe> recipeList;
 
@@ -32,7 +33,15 @@ public class    RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeV
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         RecipeResponse.Recipe recipe = recipeList.get(position);
         holder.recipeTitle.setText(recipe.getTitle());
-        Glide.with(holder.itemView.getContext()).load(recipe.getImage()).into(holder.recipeImage);
+
+        String description = recipe.getSourceUrl() != null ? recipe.getSourceUrl() : "No description available";
+        holder.recipeDescription.setText(description);
+
+        Glide.with(holder.itemView.getContext())
+                .load(recipe.getImage())
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image)
+                .into(holder.recipeImage);
     }
 
     @Override
@@ -40,14 +49,23 @@ public class    RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeV
         return recipeList.size();
     }
 
+    // New method to update recipes
+    public void updateRecipes(List<RecipeResponse.Recipe> newRecipes) {
+        this.recipeList.clear();
+        this.recipeList.addAll(newRecipes);
+        notifyDataSetChanged();
+    }
+
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        TextView recipeTitle;
+        TextView recipeTitle, recipeDescription;
         ImageView recipeImage;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
             recipeTitle = itemView.findViewById(R.id.recipeTitle);
+            recipeDescription = itemView.findViewById(R.id.recipeDescription);
             recipeImage = itemView.findViewById(R.id.recipeImage);
         }
     }
 }
+

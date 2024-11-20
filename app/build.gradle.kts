@@ -1,4 +1,4 @@
-import java.util.Properties  // Add this at the top
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,7 +21,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Load API Key from config.properties
+        // Load API Keys from config.properties
         val configFile = rootProject.file("config.properties")
         val configProperties = Properties()
 
@@ -29,7 +29,9 @@ android {
             configFile.inputStream().use { configProperties.load(it) }
         }
 
-        buildConfigField("String", "API_KEY", "\"${configProperties["API_KEY"] ?: ""}\"")
+        // Add Twinword and Spoonacular API keys as BuildConfig fields
+        buildConfigField("String", "TWINWORD_API_KEY", "\"${configProperties["TWINWORD_API_KEY"] ?: ""}\"")
+        buildConfigField("String", "SPOONACULAR_API_KEY", "\"${configProperties["SPOONACULAR_API_KEY"] ?: ""}\"")
     }
 
     buildTypes {
@@ -41,6 +43,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

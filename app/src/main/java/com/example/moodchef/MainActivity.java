@@ -5,17 +5,32 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import androidx.recyclerview.widget.RecyclerView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import java.util.ArrayList;  // Import for ArrayList
+import java.util.List;       // Import for List
+
+
 public class MainActivity extends AppCompatActivity {
 
-    private EditText moodInput;
-    private Button moodSubmitButton;
-    private TwinwordEmotionApiClient apiClient;
+    private EditText moodInput, ingredientInput;
+    private Button recipeFetchButton;
+    private TextView recipeSuggestionText;
+    private RecyclerView recipeRecyclerView;
+    private RecipeAdapter recipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,110 +38,134 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         moodInput = findViewById(R.id.moodInput);
-        moodSubmitButton = findViewById(R.id.moodSubmitButton);
-        apiClient = new TwinwordEmotionApiClient();
+        ingredientInput = findViewById(R.id.ingredientInput);
+        recipeFetchButton = findViewById(R.id.recipeFetchButton);
+        recipeSuggestionText = findViewById(R.id.recipeSuggestionText);
+        recipeRecyclerView = findViewById(R.id.recipeRecyclerView);
 
-        moodSubmitButton.setOnClickListener(new View.OnClickListener() {
+        recipeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recipeFetchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userMood = moodInput.getText().toString().trim();
-                if (!userMood.isEmpty()) {
-                    analyzeMood(userMood);
-                } else {
-                    Log.d("MainActivity", "Mood input is empty!");
+                String userMoodText = moodInput.getText().toString().trim();
+                String userIngredients = ingredientInput.getText().toString().trim();
+
+                if (userMoodText.isEmpty() || userIngredients.isEmpty()) {
+                    recipeSuggestionText.setText("Please enter both mood and ingredients!");
+                    return;
                 }
+
+                // First, analyze the mood
+                analyzeMood(userMoodText, new MoodCallback() {
+                    @Override
+                    public void onMoodDetected(String mood) {
+                        // After mood is detected, fetch recipes based on ingredients and mood
+                        fetchRecipes(userIngredients, mood);
+                    }
+                });
             }
         });
+
+
     }
 
-    private void analyzeMood(String text) {
+    public interface MoodCallback {
+        void onMoodDetected(String mood);
+    }
+
+    private void analyzeMood(String text, final MoodCallback callback) {
+        TwinwordEmotionApiClient apiClient = new TwinwordEmotionApiClient();
+
         apiClient.analyzeEmotion(text, new TwinwordEmotionApiClient.ApiCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
                 Log.d("TwinwordResponse", "Response: " + jsonResponse);
 
                 try {
-                    // Parse the JSON response
                     JSONObject responseObject = new JSONObject(jsonResponse);
-
-                    // Get the array of emotions detected
                     JSONArray emotionsDetected = responseObject.getJSONArray("emotions_detected");
 
-                    // Get the emotion scores object
-                    JSONObject emotionScores = responseObject.getJSONObject("emotion_scores");
+                    if (emotionsDetected.length() > 0) {
+                        String detectedMood = emotionsDetected.getString(0); // Get the primary mood
+                        Log.d("Mood", "Detected mood: " + detectedMood);
 
-                    // Find the dominant emotion
-                    String dominantEmotion = null;
-                    double maxScore = Double.MIN_VALUE;
-
-                    for (int i = 0; i < emotionsDetected.length(); i++) {
-                        String emotion = emotionsDetected.getString(i);
-                        double score = emotionScores.getDouble(emotion);
-
-                        if (score > maxScore) {
-                            maxScore = score;
-                            dominantEmotion = emotion;
-                        }
+                        callback.onMoodDetected(detectedMood);
+                    } else {
+                        Log.e("Mood", "No mood detected");
+                        callback.onMoodDetected("neutral"); // Default to neutral if no mood detected
                     }
-
-                    Log.d("TwinwordResponse", "Dominant Emotion: " + dominantEmotion);
-
-                    // Suggest recipes based on the dominant emotion
-                    suggestRecipes(dominantEmotion);
-
                 } catch (Exception e) {
                     Log.e("TwinwordResponse", "Error parsing JSON: " + e.getMessage());
+                    callback.onMoodDetected("neutral");
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 Log.e("TwinwordResponse", "Error: " + e.getMessage());
+                callback.onMoodDetected("neutral");
             }
         });
     }
 
-    private void suggestRecipes(String emotion) {
-        if (emotion == null) {
-            Log.d("SuggestRecipes", "No dominant emotion detected.");
-            return;
+    private List<RecipeResponse.Recipe> filterRecipesByMood(List<RecipeResponse.Recipe> recipes, String mood) {
+        List<RecipeResponse.Recipe> filteredRecipes = new ArrayList<>();
+
+        for (RecipeResponse.Recipe recipe : recipes) {
+            if (mood.equalsIgnoreCase("happy") && recipe.getTitle().toLowerCase().contains("smoothie")) {
+                filteredRecipes.add(recipe);
+            } else if (mood.equalsIgnoreCase("sad") && recipe.getTitle().toLowerCase().contains("comfort")) {
+                filteredRecipes.add(recipe);
+            } else if (mood.equalsIgnoreCase("tired") && recipe.getTitle().toLowerCase().contains("quick")) {
+                filteredRecipes.add(recipe);
+            }
         }
 
-        switch (emotion) {
-            case "sadness":
-                Log.d("SuggestRecipes", "Comfort food like pasta or soup!");
-                // You could load actual comfort food recipes here
-                break;
+        // If no specific mood-based recipes are found, return the default list
+        return filteredRecipes.isEmpty() ? recipes : filteredRecipes;
+    }
 
-            case "anger":
-                Log.d("SuggestRecipes", "Spicy dishes to channel the heat!");
-                // You could load spicy food recipes here
-                break;
 
-            case "fear":
-                Log.d("SuggestRecipes", "Soothing teas or light meals!");
-                // You could load calming food recipes here
-                break;
+    private void fetchRecipes(String ingredients, String mood) {
+        RecipeService recipeService = RetrofitInstance.getRecipeApi();
 
-            case "joy":
-                Log.d("SuggestRecipes", "Desserts or refreshing smoothies!");
-                // You could load desserts here
-                break;
+        recipeService.getRecipesByIngredients(ingredients, BuildConfig.SPOONACULAR_API_KEY, 10)
+                .enqueue(new Callback<List<RecipeResponse.Recipe>>() {
+                    @Override
+                    public void onResponse(Call<List<RecipeResponse.Recipe>> call, Response<List<RecipeResponse.Recipe>> response) {
+                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                            List<RecipeResponse.Recipe> recipes = response.body();
 
-            case "disgust":
-                Log.d("SuggestRecipes", "Try something new and exotic!");
-                // You could load adventurous recipes here
-                break;
+                            // Filter recipes based on mood
+                            List<RecipeResponse.Recipe> moodBasedRecipes = filterRecipesByMood(recipes, mood);
 
-            case "surprise":
-                Log.d("SuggestRecipes", "Quick and exciting dishes!");
-                // You could load exciting recipes here
-                break;
+                            Log.d("Recipe API", "Mood-based recipes fetched: " + moodBasedRecipes.size());
+                            displayRecipes(moodBasedRecipes);
+                        } else {
+                            Log.e("Recipe API", "No recipes found!");
+                            recipeSuggestionText.setText("No recipes found!");
+                        }
+                    }
 
-            default:
-                Log.d("SuggestRecipes", "General recipes for any mood.");
-                // Load general recipes here
-                break;
+                    @Override
+                    public void onFailure(Call<List<RecipeResponse.Recipe>> call, Throwable t) {
+                        Log.e("Recipe API Error", t.getMessage());
+                        recipeSuggestionText.setText("Failed to fetch recipes.");
+                    }
+                });
+    }
+
+
+
+    private void displayRecipes(List<RecipeResponse.Recipe> recipes) {
+        if (recipeAdapter == null) {
+            recipeAdapter = new RecipeAdapter(recipes);
+            recipeRecyclerView.setAdapter(recipeAdapter);
+        } else {
+            // Clear old data and update the adapter with new data
+            recipeAdapter.updateRecipes(recipes);
         }
     }
+
 }

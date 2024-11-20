@@ -5,8 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
 
-    private static final String BASE_URL = "https://api.paralleldots.com/";  // Replace with your API base URL
-    private static final String RECIPE_URL = "https://api.spoonacular.com/";  // Replace as needed
+    private static final String MOOD_URL = "https://api.paralleldots.com/";  // Base URL for mood API
+    private static final String RECIPE_URL = "https://api.spoonacular.com/";  // Base URL for Spoonacular API
 
     private static Retrofit retrofitMood;
     private static Retrofit retrofitRecipe;
@@ -14,7 +14,7 @@ public class RetrofitInstance {
     public static MoodService getMoodApi() {
         if (retrofitMood == null) {
             retrofitMood = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(MOOD_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

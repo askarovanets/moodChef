@@ -9,6 +9,6 @@ import retrofit2.http.POST;
 
 public interface MoodService {
     @Headers("Content-Type: application/json")
-    @POST("v3/emotion")  // Update this endpoint based on your API
+    @POST("v3/emotion")
     Call<MoodResponse> analyzeMood(@Body HashMap<String, String> body);
 }

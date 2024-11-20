@@ -14,7 +14,7 @@ public class RecipeResponse {
         private String image;
         private String sourceUrl;
 
-        // Constructor to match your mock data
+        // Constructor
         public Recipe(String title, String image, String sourceUrl) {
             this.title = title;
             this.image = image;
