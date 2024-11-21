@@ -10,18 +10,24 @@ public class RecipeResponse {
     }
 
     public static class Recipe {
+        private int id;
         private String title;
         private String image;
         private String sourceUrl;
 
         // Constructor
-        public Recipe(String title, String image, String sourceUrl) {
+        public Recipe(int id, String title, String image, String sourceUrl) {
+            this.id = id;
             this.title = title;
             this.image = image;
             this.sourceUrl = sourceUrl;
         }
 
         // Getters
+        public int getId() {
+            return id;
+        }
+
         public String getTitle() {
             return title;
         }

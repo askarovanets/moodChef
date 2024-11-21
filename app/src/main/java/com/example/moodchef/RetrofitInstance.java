@@ -11,16 +11,6 @@ public class RetrofitInstance {
     private static Retrofit retrofitMood;
     private static Retrofit retrofitRecipe;
 
-    public static MoodService getMoodApi() {
-        if (retrofitMood == null) {
-            retrofitMood = new Retrofit.Builder()
-                    .baseUrl(MOOD_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        return retrofitMood.create(MoodService.class);
-    }
-
     public static RecipeService getRecipeApi() {
         if (retrofitRecipe == null) {
             retrofitRecipe = new Retrofit.Builder()

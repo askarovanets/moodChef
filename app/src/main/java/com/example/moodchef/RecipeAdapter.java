@@ -1,5 +1,6 @@
 package com.example.moodchef;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,22 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private List<RecipeResponse.Recipe> recipeList;
 
     public RecipeAdapter(List<RecipeResponse.Recipe> recipeList) {
         this.recipeList = recipeList;
+    }
+
+    public void updateRecipes(List<RecipeResponse.Recipe> newRecipes) {
+        recipeList.clear();
+        recipeList.addAll(newRecipes);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -32,8 +43,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         RecipeResponse.Recipe recipe = recipeList.get(position);
-        holder.recipeTitle.setText(recipe.getTitle());
 
+        holder.recipeTitle.setText(recipe.getTitle());
         String description = recipe.getSourceUrl() != null ? recipe.getSourceUrl() : "No description available";
         holder.recipeDescription.setText(description);
 
@@ -42,18 +53,47 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.placeholder_image)
                 .into(holder.recipeImage);
+
+        holder.itemView.setOnClickListener(v -> {
+            int recipeId = recipe.getId();
+            RecipeService recipeService = RetrofitInstance.getRecipeApi();
+
+            recipeService.getRecipeInformation(recipeId, BuildConfig.SPOONACULAR_API_KEY)
+                    .enqueue(new Callback<RecipeDetailResponse>() {
+                        @Override
+                        public void onResponse(Call<RecipeDetailResponse> call, Response<RecipeDetailResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                RecipeDetailResponse recipeDetail = response.body();
+
+                                StringBuilder ingredientsBuilder = new StringBuilder();
+                                for (RecipeDetailResponse.ExtendedIngredient ingredient : recipeDetail.getExtendedIngredients()) {
+                                    ingredientsBuilder.append("- ").append(ingredient.getOriginal()).append("\n");
+                                }
+
+                                Intent intent = new Intent(holder.itemView.getContext(), RecipeDetailActivity.class);
+                                intent.putExtra("imageUrl", recipeDetail.getImage());
+                                intent.putExtra("title", recipeDetail.getTitle());
+                                intent.putExtra("ingredients", ingredientsBuilder.toString());
+                                intent.putExtra("instructions", recipeDetail.getInstructions() != null
+                                        ? recipeDetail.getInstructions()
+                                        : "Instructions not available");
+                                holder.itemView.getContext().startActivity(intent);
+                            } else {
+                                Log.e("RecipeDetail", "Failed to fetch recipe details");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RecipeDetailResponse> call, Throwable t) {
+                            Log.e("RecipeDetailError", t.getMessage());
+                        }
+                    });
+        });
     }
 
     @Override
     public int getItemCount() {
         return recipeList.size();
-    }
-
-    // New method to update recipes
-    public void updateRecipes(List<RecipeResponse.Recipe> newRecipes) {
-        this.recipeList.clear();
-        this.recipeList.addAll(newRecipes);
-        notifyDataSetChanged();
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
@@ -68,4 +108,3 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 }
-

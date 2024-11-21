@@ -1,4 +1,4 @@
-<LinearLayout
+    <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +36,7 @@
         android:textColor="@android:color/black"
         android:layout_marginTop="8dp" />
 
-    <!-- RecyclerView for Recipes -->
+        <!-- RecyclerView for Recipes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeRecyclerView"
         android:layout_width="match_parent"
