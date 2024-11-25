@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             recipeAdapter.updateRecipes(recipes);
         }
-        recipeSuggestionText.setText("Mood influencing recipes: " + (recipes.isEmpty() ? "Neutral" : recipes.get(0).getTitle()));
     }
 
     public interface MoodCallback {

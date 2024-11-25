@@ -6,7 +6,27 @@
     <color name="primaryTextColor">#212121</color>
     <color name="secondaryTextColor">#757575</color>
     <color name="buttonColor">#FF9800</color>
-    <color name="buttonTextColor">#FFFFFF</color>
-    <color name="inputBorder">#BDBDBD</color>
     <color name="shadowColor">#757575</color>
+    <color name="backgroundCream">#FFF8E1</color>
+
+    <!-- Backgrounds -->
+    <color name="backgroundDark">#1E1E2E</color> <!-- Rich dark slate -->
+    <color name="cardBackground">#252641</color> <!-- Deep eggplant purple -->
+
+    <!-- Primary and Secondary Colors -->
+    <color name="primaryOrange">#FF8C42</color> <!-- Vibrant orange, like citrus -->
+    <color name="secondaryTeal">#20C997</color> <!-- Modern teal, like fresh herbs -->
+
+    <!-- Text Colors -->
+    <color name="textLight">#FAFAFA</color> <!-- Almost white -->
+    <color name="textMuted">#A8B2D1</color> <!-- Muted blue-gray -->
+
+    <!-- Accent Colors -->
+    <color name="buttonPink">#FF4D6D</color> <!-- Vibrant pink, berry-inspired -->
+    <color name="buttonText">#FFFFFF</color> <!-- White for contrast -->
+
+    <!-- Input Field Colors -->
+    <color name="inputBackgroundDark">#2E2F47</color> <!-- Slightly lighter than the background -->
+    <color name="inputBorder">#3A3E5B</color> <!-- Muted dark border -->
+
 </resources>

@@ -13,7 +13,7 @@ import java.io.IOException;
 public class TwinwordEmotionApiClient {
 
     private static final String API_URL = "https://twinword-emotion-analysis-v1.p.rapidapi.com/analyze/";
-    private final String apiKey = BuildConfig.TWINWORD_API_KEY;
+    private static final String API_KEY = BuildConfig.TWINWORD_API_KEY; // New API Key
 
     private OkHttpClient client;
 
@@ -22,17 +22,20 @@ public class TwinwordEmotionApiClient {
     }
 
     public void analyzeEmotion(String text, final ApiCallback callback) {
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        String requestBodyContent = "text=" + text;
+        MediaType mediaType = MediaType.parse("multipart/form-data; boundary=---011000010111000001101001");
+        String requestBodyContent = "-----011000010111000001101001\r\n" +
+                "Content-Disposition: form-data; name=\"text\"\r\n\r\n" +
+                text + "\r\n" +
+                "-----011000010111000001101001--";
 
         RequestBody body = RequestBody.create(mediaType, requestBodyContent);
 
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(body)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .addHeader("X-RapidAPI-Key", apiKey)
-                .addHeader("X-RapidAPI-Host", "twinword-emotion-analysis-v1.p.rapidapi.com")
+                .addHeader("x-rapidapi-key", API_KEY)
+                .addHeader("x-rapidapi-host", "twinword-emotion-analysis-v1.p.rapidapi.com")
+                .addHeader("Content-Type", "multipart/form-data; boundary=---011000010111000001101001")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

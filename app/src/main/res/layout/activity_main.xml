@@ -1,46 +1,73 @@
-    <LinearLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/backgroundDark">
+
+
+    <TextView
+        android:id="@+id/headerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MoodChef"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/textLight"
+        android:padding="16dp" />
 
     <!-- Mood Input -->
     <EditText
         android:id="@+id/moodInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="How are you feeling?" />
+        android:background="@drawable/input_background"
+        android:hint="How are you feeling?"
+        android:padding="12dp"
+        android:textColorHint="@color/textMuted"
+        android:textColor="@color/textLight"
+        android:textSize="16sp" />
 
     <!-- Ingredients Input -->
     <EditText
         android:id="@+id/ingredientInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter available ingredients" />
+        android:background="@drawable/input_background"
+        android:hint="Enter available ingredients"
+        android:padding="12dp"
+        android:textColorHint="@color/textMuted"
+        android:textColor="@color/textLight"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp" />
 
-    <!-- Combined Action Button -->
+    <!-- Fetch Recipes Button -->
     <Button
         android:id="@+id/recipeFetchButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Get Recipes" />
+        android:backgroundTint="@color/buttonPink"
+        android:text="Get Recipes"
+        android:textColor="@color/buttonText"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
 
-    <!-- Suggestion TextView -->
+    <!-- Suggestion Text -->
     <TextView
         android:id="@+id/recipeSuggestionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Suggested Recipe will appear here"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="8dp" />
+        android:text="Suggested recipes will appear here"
+        android:textColor="@color/textLight"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
 
-        <!-- RecyclerView for Recipes -->
+    <!-- Recipe RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp" />
-
 </LinearLayout>

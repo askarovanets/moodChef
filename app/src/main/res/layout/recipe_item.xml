@@ -1,39 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="@drawable/recipe_item_background"
-    android:layout_marginBottom="8dp">
+    android:layout_height="150dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/recipe_item_background">
 
+    <!-- Recipe Image -->
     <ImageView
         android:id="@+id/recipeImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
+    <!-- Gradient Overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/image_overlay" />
 
-    <LinearLayout
+    <!-- Recipe Title -->
+    <TextView
+        android:id="@+id/recipeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true"
+        android:layout_margin="12dp"
+        android:textColor="@color/textLight"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="Recipe Title" />
 
-        <TextView
-            android:id="@+id/recipeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/primaryTextColor"
-            android:fontFamily="sans-serif-medium" />
-
-        <TextView
-            android:id="@+id/recipeDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryTextColor"
-            android:textSize="14sp" />
-    </LinearLayout>
-</LinearLayout>
+    <!-- Recipe Description -->
+    <TextView
+        android:id="@+id/recipeDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/recipeTitle"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/textMuted"
+        android:textSize="14sp"
+        android:text="" />
+</RelativeLayout>

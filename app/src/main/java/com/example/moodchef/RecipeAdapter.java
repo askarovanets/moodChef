@@ -45,7 +45,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         RecipeResponse.Recipe recipe = recipeList.get(position);
 
         holder.recipeTitle.setText(recipe.getTitle());
-        String description = recipe.getSourceUrl() != null ? recipe.getSourceUrl() : "No description available";
+        String description = recipe.getSourceUrl() != null ? recipe.getSourceUrl() : "";
         holder.recipeDescription.setText(description);
 
         Glide.with(holder.itemView.getContext())
